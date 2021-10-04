@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import fetchDataApi from './Components/services/api-service';
+import fetchImages from './services/api-service';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
 import Searchbar from './Components/Searchbar/Searchbar';
 import Modal from './Components/Modal/Modal';
@@ -14,15 +14,15 @@ class App extends Component {
     showModal: false,
     showLoader: false,
     error: null,
-    largeImage: {},
+    largeImage: '',
     total: 0,
   };
 
   fetchGallery = () => {
-    const { searchQuery, page } = this.state;
+    const { search, page } = this.state;
     this.setState({ showLoader: true });
 
-    fetchDataApi(searchQuery, page)
+    fetchImages(search, page)
       .then(({ hits, total }) => {
         this.setState(prevState => ({
           gallery: [...prevState.gallery, ...hits],
@@ -43,10 +43,10 @@ class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    if (this.state.searchQuery === searchQuery) {
-      return;
-    }
-    this.setState({ searchQuery, gallery: [], page: 1 });
+    // if (this.state.search === searchQuery) {
+    //   return;
+    // }
+    this.setState({ search: searchQuery, gallery: [], page: 1 });
   };
 
   toggleModal = () => {
@@ -56,6 +56,7 @@ class App extends Component {
   };
 
   handleOpenPicture = largeImage => {
+    console.log(largeImage);
     this.setState({ largeImage });
     this.toggleModal();
   };
@@ -64,17 +65,20 @@ class App extends Component {
     const { total, page } = this.state;
     return Math.ceil(total / 12) !== page - 1;
   };
+
   componentDidMount() {
     this.setState({ showLoader: true });
     this.fetchGallery();
   }
 
-  componentDidUpdate(prevState) {
-    const prevQuery = prevState.searchQuery;
-    const nextQuery = this.state.searchQuery;
+  componentDidUpdate(prevProps, prevState) {
+    const prevQuery = prevState.search;
+    const nextQuery = this.state.search;
     if (prevQuery !== nextQuery) {
       this.fetchGallery();
     }
+
+    console.log(prevQuery, nextQuery);
   }
   render() {
     const { error, showLoader, showModal, gallery, largeImage } = this.state;
@@ -90,12 +94,12 @@ class App extends Component {
         {showLoader && <Loader />}
 
         {gallery.length > 0 && !showLoader && showLoadMore && (
-          <Button onLoadMore={this.fetchGallery} />
+          <Button onClick={this.fetchGallery} />
         )}
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <img src={largeImage.largeImageURL} alt={largeImage.tags} />
+            <img src={this.state.largeImage} alt={this.state.largeImage} />
           </Modal>
         )}
       </div>

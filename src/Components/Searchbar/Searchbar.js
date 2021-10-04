@@ -14,7 +14,7 @@ class Searchbar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.onSubmit(this.state.search);
-    this.reset();
+    // this.reset();
   };
 
   reset = () => {
@@ -24,8 +24,8 @@ class Searchbar extends Component {
   render() {
     return (
       <header className={style.Searchbar}>
-        <form className={style.SearchForm}>
-          <button type="submit" className={style.SearchFormBtn} onSubmit={this.handleSubmit}>
+        <form className={style.SearchForm} onSubmit={this.handleSubmit}>
+          <button type="submit" className={style.SearchFormBtn}>
             <span className={style.SearchFormBtnLabel}>Search</span>
           </button>
 

@@ -6,7 +6,7 @@ const ImageGalleryItem = ({ image, openImg }) => {
     <li
       className={style.ImageGalleryItem}
       onClick={() => {
-        openImg(image);
+        openImg(image.largeImageURL);
       }}
     >
       <img src={image.webformatURL} alt={image.tags} className={style.ImageGalleryItemImage} />
